@@ -10,12 +10,16 @@
   "author": "Youssef Benkhair",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.19.0",
     "express": "^4.17.1",
+    "mongodb": "^3.6.4",
+    "mongoose": "^5.11.15",
     "pug": "^3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.13",
     "@babel/node": "^7.12.13",
+    "@babel/plugin-transform-typescript": "^7.12.13",
     "@babel/preset-env": "^7.12.1",
     "nodemon": "^2.0.7"
   }
