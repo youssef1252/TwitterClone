@@ -1,4 +1,5 @@
 import express from 'express';
+import bcrypt from 'bcrypt';
 import { User } from '../schemas/UserSchema';
 
 const app = express();
@@ -42,9 +43,11 @@ routerRegister.post('/', async (req, res, next) => {
         if (user == null) {
             // User not found
             let data = req.body;
+            data.password = await bcrypt.hash(password, 10);
             User.create(data)
             .then((user) => {
-                console.log(user);
+                req.session.user = user;
+                return  res.redirect('/');
             })
             .catch((error) => {
                 console.log(error);
