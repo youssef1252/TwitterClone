@@ -6,6 +6,8 @@ import { requireLogin } from './middleware';
 import { routerLogin } from './routes/loginRoutes';
 import { routerRegister } from './routes/registerRoutes';
 import { routerLogout } from './routes/logoutRoutes';
+import { postsApiRoute } from './routes/api/posts';
+import { routerPost } from './routes/postRoutes';
 import Database from './database';
 
 const app = express();
@@ -28,15 +30,20 @@ app.use(session({
 app.use("/login", routerLogin);
 app.use("/logout", routerLogout);
 app.use("/register", routerRegister);
+app.use("/posts", requireLogin, routerPost);
+
+app.use("/api/posts", postsApiRoute);
 
 app.get('/', requireLogin, (req, res, next) => {
 
+    let userLogged = req.session.user;
     let payload = {
         pageTitle: "Home",
-        userLoggedIn: req.session.user
+        userLoggedIn: userLogged,
+        userLoggedInJs: JSON.stringify(userLogged)
     }
 
-    res.status(200).render('home', payload);
+    res.status(200).render('posts/index', payload);
 });
 
 app.listen(port, () => console.log(`Server listen on port ${port}`));

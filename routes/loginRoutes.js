@@ -9,7 +9,7 @@ routerLogin.get('/', (req, res, next) => {
     let payload = {
         pageTitle: "Login"
     }
-    res.status(200).render('login', payload);
+    res.status(200).render('security/login', payload);
 
 });
 

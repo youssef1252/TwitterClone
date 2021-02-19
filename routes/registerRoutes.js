@@ -11,7 +11,7 @@ routerRegister.get('/', (req, res, next) => {
         pageTitle: "Register"
     }
 
-    res.status(200).render('register', payload);
+    res.status(200).render('security/register', payload);
 
 });
 
