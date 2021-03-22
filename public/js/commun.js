@@ -60,6 +60,33 @@ $("#replyModal").on("hidden.bs.modal", () => {
 
 });
 
+$("#deletePostModel").on("show.bs.modal", (event) => {
+
+    var deletePostButton = $(event.relatedTarget);
+    const postId = getPostIdFromElement(deletePostButton);
+
+    $("#deletePostButton").data("id", postId);
+
+});
+
+$("#deletePostButton").on('click', (event) => {
+
+    let postId = $(event.target).data().id;
+
+    if(postId === undefined) return;
+    $.ajax({
+        type: "DELETE",
+        url: `/api/posts/${postId}`,
+        success: (data, status, xhr) => {
+            if (xhr.status != 202) {
+                alert("could not delete tweet")
+                return;
+            }
+            location.reload();
+        }
+    });
+});
+
 $(document).on('click', '.likeButton', event => {
 
     var likeButton = $(event.target);
@@ -83,7 +110,7 @@ $(document).on('click', '.likeButton', event => {
 $(document).on('click', '.retweetButton', event => {
 
     let retweetButton = $(event.target);
-    const postId = getPostIdFromElement(retweetButton);
+    let postId = getPostIdFromElement(retweetButton);
     if(postId === undefined) return;
     $.ajax({
         type: "POST",
@@ -126,20 +153,21 @@ function createPostHtml(postData, largeFont = false) {
 
     if (postData._id == null) return console.log("Post object is null");
 
-    const isRetweet = postData.retweetData !== undefined;
-    const retweetBy = isRetweet ? postData.postedBy.username : null;
+    let isRetweet = postData.retweetData !== undefined;
+    let retweetBy = isRetweet ? postData.postedBy.username : null;
     postData = isRetweet ? postData.retweetData : postData;
-    const postedBy = postData.postedBy;
+    let postedBy = postData.postedBy;
 
     if (postedBy._id === undefined) return console.log("User object not populated");
 
-    const displayName = postedBy.firstName + ' ' + postedBy.lastName;
-    const timestamp = timeDifference(new Date(), new Date(postData.createdAt));
-    const likeButtonActiveClass = postData.likes.includes(userLoggedIn._id) ? "active" : "";
-    const retweetButtonActiveClass = postData.retweetUsers.includes(userLoggedIn._id) ? "active" : "";
+    let displayName = postedBy.firstName + ' ' + postedBy.lastName;
+    let timestamp = timeDifference(new Date(), new Date(postData.createdAt));
+    let likeButtonActiveClass = postData.likes.includes(userLoggedIn._id) ? "active" : "";
+    let retweetButtonActiveClass = postData.retweetUsers.includes(userLoggedIn._id) ? "active" : "";
     let retweetText = '';
     let replyFlag = '';
     let largeFontClass = largeFont ? "largeFont" : "";
+    let buttonDeletePost = '';
 
     if (isRetweet) {
         retweetText = `<span><i class="fas fa-retweet"></i> <a href='/profile/${retweetBy}'>${postData.postedBy._id == userLoggedIn._id ? 'You' : '@'+retweetBy} Retweeted</a></span>`;
@@ -158,6 +186,10 @@ function createPostHtml(postData, largeFont = false) {
                     </div>`;
     }
 
+    if (postedBy._id == userLoggedIn._id) {
+        buttonDeletePost = `<button data-id='${postData._id}' data-toggle='modal' data-target='#deletePostModel'><i class='fas fa-times'></i></button>`;
+    }
+
     return `<div class='post ${largeFontClass}' data-id='${postData._id}'>
                 <div class='postActionContainer'>
                     ${retweetText}
@@ -171,6 +203,7 @@ function createPostHtml(postData, largeFont = false) {
                             <a class='displayName' href='/profile/${postedBy.username}'>${displayName}</a>
                             <span class='username'>@${postedBy.username}</span>
                             <span class='date'>${timestamp}</span>
+                            ${buttonDeletePost}
                         </div>
                         ${replyFlag}
                         <div class='postBody'>

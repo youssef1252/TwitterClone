@@ -27,7 +27,7 @@ routerLogin.post('/', async (req, res, next) => {
         .catch((error) => {
             console.log(error);
             payload.errorMessage = "Something went wrong.";
-            res.status(200).render('login', payload);
+            res.status(200).render('security/login', payload);
         });
 
         if (user) {

@@ -24,3 +24,20 @@ mixin createReplyModel(userLoggedIn)
                     textarea#replyTextarea(placeholder="Tweet your reply")
           .modal-footer
             button#submitReplyButton.btn.btn-primary(type='button' disabled="") Reply
+
+mixin createDeletePostModel()
+    #deletePostModel.modal.fade(tabindex='-1' role='dialog' aria-labelledby='deletePostModel' aria-hidden='true')
+      .modal-dialog(role='document')
+        .modal-content
+          .modal-header
+            h5#replyModalLabel.modal-title Delete the post?
+            button.close(type='button' data-dismiss='modal' aria-label='Close')
+              span(aria-hidden='true') &times;
+          .modal-body
+            p You won't be able to delete this.
+          .modal-footer
+            button#deletePostButton.btn.btn-primary(type='button') Delete
+
+mixin createPostModal(userLoggedIn)
+  +createReplyModel(userLoggedIn)
+  +createDeletePostModel()

@@ -8,6 +8,7 @@ import { routerRegister } from './routes/registerRoutes';
 import { routerLogout } from './routes/logoutRoutes';
 import { postsApiRoute } from './routes/api/posts';
 import { routerPost } from './routes/postRoutes';
+import { profileLogin } from './routes/profileRoutes';
 import Database from './database';
 
 const app = express();
@@ -31,8 +32,9 @@ app.use("/login", routerLogin);
 app.use("/logout", routerLogout);
 app.use("/register", routerRegister);
 app.use("/posts", requireLogin, routerPost);
+app.use("/profile", requireLogin, profileLogin);
 
-app.use("/api/posts", postsApiRoute);
+app.use("/api/posts", requireLogin, postsApiRoute);
 
 app.get('/', requireLogin, (req, res, next) => {
 

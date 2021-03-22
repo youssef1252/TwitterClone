@@ -115,6 +115,15 @@ postsApiRoute.post('/:id/retweet', async (req, res, next) => {
 
 });
 
+postsApiRoute.delete('/:id', async (req, res, next) => {
+    await Post.findByIdAndDelete(req.params.id)
+    .then(() => res.sendStatus(202))
+    .catch(error => {
+        console.log(error);
+        res.sendStatus(400);
+    })
+});
+
 async function getPosts(filter) {
 
     let results = await Post.find(filter)
