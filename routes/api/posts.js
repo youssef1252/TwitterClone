@@ -14,7 +14,7 @@ postsApiRoute.get('/', async (req, res, next) => {
 postsApiRoute.get('/:id', async (req, res, next) => {
 
     const postId = req.params.id;
-    let postData = await getPosts({ _id: postId} );
+    let postData = await getPosts({ _id: postId });
     let results = {};
     
     postData = postData[0];

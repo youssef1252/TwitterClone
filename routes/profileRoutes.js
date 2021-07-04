@@ -25,21 +25,23 @@ async function getPayload(req) {
         pageTitle: userLogged.username,
         userLoggedIn: userLogged,
         userLoggedInJs: JSON.stringify(userLogged),
-        // profileUser: JSON.stringify(userLogged),
+        profileUser: JSON.stringify(userLogged),
     };
     if (req.params && req.params.username) {
-        var ObjectId = Schema.ObjectId;
-        let user = await User.findOne({$or: [{ username: req.params.username }, { _id: new ObjectId(req.params.username) }]});
-        // user = !user ? await User.findById(req.params.username) : user;
-        pageInformation = !user ? 
-        {
-            pageTitle: req.params.username}
-             : 
-        {
-            pageTitle: user.username,
-            userLoggedIn: user,
-            userLoggedInJs: JSON.stringify(user),
-            profileUser: user,
+        try {
+            let user = await User.findOne({ username: req.params.username });
+            user = !user ? await User.findById(req.params.username) : user;
+            pageInformation = !user ? 
+            { pageTitle: req.params.username }
+                : 
+            {
+                pageTitle: user.username,
+                userLoggedIn: user,
+                userLoggedInJs: JSON.stringify(user),
+                profileUser: user,
+            }   
+        } catch (error) {
+            pageInformation = { pageTitle: req.params.username }
         }
     }
     return pageInformation;
